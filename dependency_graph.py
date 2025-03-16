@@ -379,6 +379,8 @@ def main():
     # Default options
     output_formats = ["json"]
     output_dir = "outputs"
+    dependency_types = ['all']  # Default to all
+    max_depth = 3  # Default
     
     # Parse additional options
     for arg in sys.argv[2:]:
@@ -387,6 +389,10 @@ def main():
             output_formats = [fmt.strip() for fmt in formats]
         elif arg.startswith('--output-dir='):
             output_dir = arg[13:]
+        elif arg.startswith('--dependency-types='):
+            dependency_types = arg[19:].split(',')
+        elif arg.startswith('--max-depth='):
+            max_depth = int(arg[12:])
     
     if not os.path.exists(folder_path):
         print(f"Error: The path '{folder_path}' does not exist.")
@@ -426,7 +432,7 @@ def main():
         language = detect_language(file_path)
         file_info = analyze_file(file_path, language)
         file_analyses.append(file_info)
-        
+
     # Build the dependency graph
     print("\nBuilding dependency graph...")
     graph = build_dependency_graph(file_analyses)
